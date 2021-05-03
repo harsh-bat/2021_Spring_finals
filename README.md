@@ -75,7 +75,7 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/daylight.jpg">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/daylight.jfif">
 
 </p>
 
