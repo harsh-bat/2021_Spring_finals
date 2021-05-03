@@ -6,14 +6,8 @@ import numpy as np
 pd.options.plotting.backend = "plotly"
 
 
-def convert_lat_lon(x:str) -> tuple:
+def convert_lat_lon(x: str) -> tuple:
     return float(eval(x)['latitude']), float(eval(x)['longitude'])
-
-
-def was_time_ahead(check_date):
-    check_date = datetime.strptime(check_date, '%Y-%m-%d')
-    dst_selected_year = dst_data.loc[check_date.year].to_dict()
-    return dst_selected_year['Start Complete'] <= check_date < dst_selected_year['End Complete']
 
 
 @jit(forceobj=True)
@@ -73,10 +67,15 @@ def dst_clean(file_path: str, days_to_check):
     dst_data = pd.read_csv(file_path, dtype={'Year': 'str'}, index_col='Year')
     dst_data['Start Complete'] = pd.to_datetime(dst_data['Start'] + ' ' + dst_data.index.astype(str))
     dst_data['End Complete'] = pd.to_datetime(dst_data['End'] + ' ' + dst_data.index.astype(str))
-    was_time_ahead = np.vectorize(was_time_ahead)
+
+    def was_time_ahead(check_date):
+        check_date = datetime.strptime(check_date, '%Y-%m-%d')
+        dst_selected_year = dst_data.loc[check_date.year].to_dict()
+        return dst_selected_year['Start Complete'] <= check_date < dst_selected_year['End Complete']
+
+    was_time_ahead_vec = np.vectorize(was_time_ahead)
     was_dst_df = pd.DataFrame({'Date': days_to_check,
-                             'WasDST': was_time_ahead(days_to_check)
-                             })
+                             'WasDST': was_time_ahead_vec(days_to_check)})
     return was_dst_df
 
 
@@ -86,7 +85,7 @@ def race_clean(file_path: str):
     return race_data
 
 
-def plot_daylight_crime_rate(crime_desc_list):
+def plot_daylight_crime_rate(crime_desc_list, crime_rates_dst):
     for crime_desc in crime_desc_list:
         plot_data = crime_rates_dst[crime_rates_dst['Crime Code Description'] == crime_desc].melt().iloc[1:]
         fig = plot_data.plot.bar(x='variable',
