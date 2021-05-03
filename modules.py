@@ -3,7 +3,7 @@ import pandas as pd
 import json
 import plotly.express as px
 pd.options.plotting.backend = "plotly"
-
+from numba import jit
 
 def convert_lat_lon(x:str) -> tuple:
     return float(eval(x)['latitude']), float(eval(x)['longitude'])
