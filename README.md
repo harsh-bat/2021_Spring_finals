@@ -62,7 +62,7 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo1.jpg">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo1.png">
 
 </p>
 
@@ -80,7 +80,7 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo2.jpg">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo2.png">
 
 </p>
 
@@ -97,12 +97,12 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 </p>
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo3a.jpg">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo3a.png">
 
 </p>
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo3b.jpg">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo3b.png">
 
 </p>
 
@@ -119,7 +119,7 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 </p>
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo4.jpg">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo4.png">
 
 </p>
 ### Conclusion : Crime rate for no crimes increases more than 10% on a full moon night. Hence, we reject hypothesis 4.
