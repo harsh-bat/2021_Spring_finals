@@ -7,7 +7,7 @@
 
 <p align="center">
 
-							Type II Final Project
+                Type II Final Project
 
 </p>
 
