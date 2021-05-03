@@ -1,15 +1,14 @@
 
-<p align="center">
+<h1 align="center">
+IS 597 Programing for Analytics & Data Processing
+</h1>
 
-				IS 597 Programing for Analytics & Data Processing
+<h1 align="center">
+Type II Final Project
+</h1>  
 
-</p>
-
-<p align="center">
-
-                        Type II Final Project
-
-</p>
+<br>
+<br>
 
 <p align="center">
 
