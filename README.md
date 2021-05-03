@@ -32,7 +32,7 @@ Divya Sharma - dsharm31@illinois.edu
 
 ## Overview
 
-Los Angeles County is the most populous in the Unites States as per [Wikipedia](https://en.wikipedia.org/wiki/Los_Angeles_County,_California). Its population is 10.04 million as of the 2019 Cencus data. With such a high population, investigating crime rates and factors related to it is a common thought. Since this area has been widely analyzed upon, we decided to use these specific dataset combinations which have very little public analyses performed on them. We have four hypotheses, in which we test factors commonly related to crime.
+Los Angeles County is the most populous in the Unites States as per [Wikipedia](https://en.wikipedia.org/wiki/Los_Angeles_County,_California). Its population is 10.04 million as of the 2019 Cencus data. With such a high population, investigating crime rates and factors related to it is a common thought. Since this area has been widely analyzed upon, we decided to use these specific dataset combinations which have very little public analyses performed on them. We have four hypotheses, in which we test factors commonly related to crime. We use [Numba](http://numba.pydata.org/) to optimize performance of one of the preprocessing functions which significantly reduces the calculation time by approximately 9 times.
 
 ## Datasets
 
