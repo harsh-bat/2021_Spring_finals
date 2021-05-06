@@ -54,7 +54,7 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/races.jpg">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/pics/races.jpg">
 
 </p>
 
@@ -62,7 +62,7 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo1.png">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/pics/hypo1.png">
 
 </p>
 
@@ -72,7 +72,7 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/income.jpg">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/pics/income.jpg">
 
 </p>
 
@@ -80,7 +80,7 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo2.png">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/pics/hypo2.png">
 
 </p>
 
@@ -90,19 +90,19 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/daylight.jfif">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/pics/daylight.jfif">
 
 ## Results
 
 </p>
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo3a.png">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/pics/hypo3a.png">
 
 </p>
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo3b.png">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/pics/hypo3b.png">
 
 </p>
 
@@ -112,14 +112,14 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/fullmoon.jpg">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/pics/fullmoon.jpg">
 
 ## Results
 
 </p>
 <p align="center">
 
-<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/hypo4.png">
+<img src="https://github.com/harsh-bat/2021_Spring_finals/blob/main/pics/hypo4.png">
 
 </p>
 
