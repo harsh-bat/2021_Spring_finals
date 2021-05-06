@@ -1,5 +1,4 @@
 import pandas as pd
-import plotly.express as px
 from numba import jit
 from datetime import datetime
 import numpy as np
@@ -7,7 +6,16 @@ pd.options.plotting.backend = "plotly"
 
 
 def convert_lat_lon(x: str) -> tuple:
+    """
+
+    :param x: Location json converted into a string format
+    :return:  Tuple of lat and lon
+
+    >>> convert_lat_lon(pd.read_csv('data/arrest-data-from-2010-to-present.csv')['Location'].iloc[14])
+    (34.0954, -118.2961)
+    """
     return float(eval(x)['latitude']), float(eval(x)['longitude'])
+
 
 
 @jit(forceobj=True)
