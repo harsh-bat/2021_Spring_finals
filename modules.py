@@ -11,21 +11,30 @@ def convert_lat_lon(x: str) -> tuple:
     :param x: Location json converted into a string format
     :return:  Tuple of lat and lon
 
-    >>> convert_lat_lon(pd.read_csv('data/arrest-data-from-2010-to-present.csv')['Location'].iloc[14])
-    (34.0954, -118.2961)
+    >>> convert_lat_lon("{\'latitude\': \'34.024\', \'longitude\': \'-118.409\'}")
+    (34.024, -118.409)
+    >>> convert_lat_lon(pd.read_csv('data/arrest-data-from-2010-to-present.csv')['Location'].iloc[21])
+    (34.1695, -118.3774)
     """
     return float(eval(x)['latitude']), float(eval(x)['longitude'])
-
 
 
 @jit(forceobj=True)
 def calc_zip(lat, lon, zip_data) -> list:
     """
     This function calculates the zipcode from the given latitude and longitude columns of a crime occurred in the dataset
-    :param x: Latitude, Longitude and the dataset containing latitude and longitude
+    :param zip_data: Dataset containing lat lon zip mapping
+    :param lon: Longitude
+    :param lat: Latitude
     :return:  Zipcode
 
-    >>> calc_zip(34.0954, -118.2961, pd.read_csv('data/ziplatlon.csv'))
+    >>> zip_test_data = pd.read_csv('data/ziplatlon.csv', dtype={'ZIP': 'str'})
+    >>> calc_zip(34.0954, -118.2961, zip_test_data)
+    '90029'
+    >>> calc_zip(32.534, -118.463, zip_test_data)
+    '90704'
+    >>> calc_zip(35.049, -119.678, zip_test_data)
+    '93254'
 
     """
     zip_lat_list = zip_data['LAT'].to_list()
@@ -33,8 +42,6 @@ def calc_zip(lat, lon, zip_data) -> list:
     zip_zip_list = zip_data['ZIP'].to_list()
     res_zip = None
     res_dis = 999
-
-    i = 0
     for i in range(len(zip_zip_list)):
         zzip = zip_zip_list[i]
         zlat = zip_lat_list[i]
