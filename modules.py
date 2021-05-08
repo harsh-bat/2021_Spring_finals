@@ -7,7 +7,7 @@ pd.options.plotting.backend = "plotly"
 
 def convert_lat_lon(x: str) -> tuple:
     """
-
+    This function converts the lat and lon column data to a tuple
     :param x: Location json converted into a string format
     :return:  Tuple of lat and lon
 
@@ -19,7 +19,15 @@ def convert_lat_lon(x: str) -> tuple:
 
 
 @jit(forceobj=True)
-def calc_zip(lat, lon, zip_data):
+def calc_zip(lat, lon, zip_data) -> list:
+    """
+    This function calculates the zipcode from the given latitude and longitude columns of a crime occurred in the dataset
+    :param x: Latitude, Longitude and the dataset containing latitude and longitude
+    :return:  Zipcode
+
+    >>> calc_zip(34.0954, -118.2961, pd.read_csv('data/ziplatlon.csv'))
+
+    """
     zip_lat_list = zip_data['LAT'].to_list()
     zip_lon_list = zip_data['LNG'].to_list()
     zip_zip_list = zip_data['ZIP'].to_list()
@@ -39,7 +47,15 @@ def calc_zip(lat, lon, zip_data):
     return res_zip
 
 
-def arrest_clean(file_path: str):
+def arrest_clean(file_path: str) -> pd.DataFrame:
+    """
+    This function performs the data cleaning for the arrest dataset
+    :param x: arrest-data-from-2010-to-present.csv dataset file
+    :return:  Pandas Dataframe
+
+    >>> arrest_clean(pd.read_csv('data/arrest-data-from-2010-to-present.csv'))
+
+    """
     arrest_data = pd.read_csv(file_path, dtype={'ZipCode': 'str'})
     arrest_data.dropna(subset=['Charge Group Description', 'Charge Group Code'], inplace=True)
     arrest_data['Charge Group Code'] = arrest_data['Charge Group Code'].astype('int')
@@ -48,7 +64,15 @@ def arrest_clean(file_path: str):
                         'Charge Group Description', 'Lat', 'Lon', 'ZipCode', 'Year']]
 
 
-def crime_clean(file_path: str):
+def crime_clean(file_path: str) -> pd.DataFrame:
+    """
+    This function performs the data cleaning for the crime dataset
+    :param x: crime-data-from-2010-to-present.csv dataset file
+    :return:  Pandas Dataframe
+
+    >>> crime_clean(pd.read_csv('data/crime-data-from-2010-to-present.csv'))
+
+    """
     crime_data = pd.read_csv(file_path, dtype={'ZipCode': 'str'})
     crime_data['Year'] = crime_data['Date Occurred'].apply(lambda x: x[:4])
     crime_data['Crime Date'] = crime_data['Date Occurred'].apply(lambda x: x[:10])
@@ -56,7 +80,15 @@ def crime_clean(file_path: str):
                        'Victim Age', 'Victim Sex', 'Lat', 'Lon', 'ZipCode', 'Year', 'Crime Date']]
 
 
-def income_clean(file_path: str):
+def income_clean(file_path: str) -> pd.DataFrame:
+    """
+    This function performs the data cleaning for the income dataset
+    :param x: LAIncome.csv dataset file
+    :return:  Pandas Dataframe
+
+    >>> arrest_clean(pd.read_csv('data/LAIncome.csv'))
+
+    """
     income_data = pd.read_csv(file_path, sep='\t', dtype={'Zip': 'str'})
     income_data.drop(income_data[income_data['Amount'].apply(lambda x: not x.startswith('$'))].index, axis=0,
                      inplace=True)
@@ -64,19 +96,27 @@ def income_clean(file_path: str):
     return income_data[['Zip', 'Amount']]
 
 
-def full_moon_finder(file_path: str):
+def full_moon_finder(file_path: str) -> pd.DataFrame:
     moon_data = pd.read_csv(file_path)
     moon_data['Form_Date'] = pd.to_datetime(moon_data[' Date'])
     moon_dates = moon_data['Form_Date'].astype('str').to_list()
     return moon_dates
 
 
-def dst_clean(file_path: str, days_to_check):
+def dst_clean(file_path: str, days_to_check) -> pd.DataFrame:
+    """
+    This function performs the data cleaning for the daylight savings dataset. It is a nested function which checks whether a crime data was a fullmoon night or not.
+    :param x: LAIncome.csv dataset file, crime_data Dataframe
+    :return:  Pandas Dataframe
+
+    >>> dst_clean(pd.read_csv('data/dst.csv'))
+
+    """
     dst_data = pd.read_csv(file_path, dtype={'Year': 'str'}, index_col='Year')
     dst_data['Start Complete'] = pd.to_datetime(dst_data['Start'] + ' ' + dst_data.index.astype(str))
     dst_data['End Complete'] = pd.to_datetime(dst_data['End'] + ' ' + dst_data.index.astype(str))
 
-    def was_time_ahead(check_date):
+    def was_time_ahead(check_date) -> pd.DataFrame:
         check_date = datetime.strptime(check_date, '%Y-%m-%d')
         dst_selected_year = dst_data.loc[check_date.year].to_dict()
         return dst_selected_year['Start Complete'] <= check_date < dst_selected_year['End Complete']
@@ -87,13 +127,29 @@ def dst_clean(file_path: str, days_to_check):
     return was_dst_df
 
 
-def race_clean(file_path: str):
+def race_clean(file_path: str) -> pd.DataFrame:
+    """
+    This function performs the data cleaning for the races dataset
+    :param x: LARace.csv dataset file
+    :return:  Pandas Dataframe
+
+    >>> race_clean(pd.read_csv('data/LARace.csv'))
+
+    """
     race_data = pd.read_csv(file_path, dtype={'Zip Code': 'str'})
     race_data = race_data[race_data['Total Population'] > 1000]
     return race_data
 
 
 def plot_daylight_crime_rate(crime_desc_list, crime_rates_dst):
+    """
+        This function plots a histogram for Hypothesis 3
+        :param x: crime_desc_list, crime_rates_dst
+        :return:  Dataframe Plot
+
+        >>> race_clean(pd.read_csv('data/LARace.csv'))
+
+        """
     for crime_desc in crime_desc_list:
         plot_data = crime_rates_dst[crime_rates_dst['Crime Code Description'] == crime_desc].melt().iloc[1:]
         fig = plot_data.plot.bar(x='variable',

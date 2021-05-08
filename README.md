@@ -124,3 +124,9 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 </p>
 
 ### Conclusion : Crime rate for no crimes increases more than 10% on a full moon night. Hence, we reject hypothesis 4.
+
+## References
+
+[Numba Documentation -  Compiling Python code with @jit](https://numba.pydata.org/numba-doc/latest/user/jit.html)
+[Pandas Documentation](https://pandas.pydata.org/docs/user_guide/index.html#user-guide)
+[Pandas Correlation Groupby](https://stackoverflow.com/questions/28988627/pandas-correlation-groupby)
