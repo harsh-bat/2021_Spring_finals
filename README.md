@@ -127,6 +127,6 @@ Los Angeles County is the most populous in the Unites States as per [Wikipedia](
 
 ## References
 
-[Numba Documentation -  Compiling Python code with @jit](https://numba.pydata.org/numba-doc/latest/user/jit.html)
-[Pandas Documentation](https://pandas.pydata.org/docs/user_guide/index.html#user-guide)
-[Pandas Correlation Groupby](https://stackoverflow.com/questions/28988627/pandas-correlation-groupby)
+[Numba Documentation -  Compiling Python code with @jit](https://numba.pydata.org/numba-doc/latest/user/jit.html) <br>
+[Pandas Documentation](https://pandas.pydata.org/docs/user_guide/index.html#user-guide) <br>
+[Pandas Correlation Groupby](https://stackoverflow.com/questions/28988627/pandas-correlation-groupby) <br>

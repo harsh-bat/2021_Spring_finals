@@ -103,7 +103,15 @@ def income_clean(file_path: str) -> pd.DataFrame:
     return income_data[['Zip', 'Amount']]
 
 
-def full_moon_finder(file_path: str) -> pd.DataFrame:
+def full_moon_finder(file_path: str) -> list:
+    """
+    This function gives a list of the full_moon dates in the correct datetime format for further calculations
+    :param x: full_moon.csv dataset file
+    :return:  list
+
+    >>> full_moon_finder(pd.read_csv('data/full_moon.csv'))
+
+    """
     moon_data = pd.read_csv(file_path)
     moon_data['Form_Date'] = pd.to_datetime(moon_data[' Date'])
     moon_dates = moon_data['Form_Date'].astype('str').to_list()
@@ -150,13 +158,13 @@ def race_clean(file_path: str) -> pd.DataFrame:
 
 def plot_daylight_crime_rate(crime_desc_list, crime_rates_dst):
     """
-        This function plots a histogram for Hypothesis 3
-        :param x: crime_desc_list, crime_rates_dst
-        :return:  Dataframe Plot
+    This function plots a histogram for Hypothesis 3
+    :param x: crime_desc_list, crime_rates_dst
+    :return:  Dataframe Plot
 
-        >>> race_clean(pd.read_csv('data/LARace.csv'))
+    >>> race_clean(pd.read_csv('data/LARace.csv'))
 
-        """
+    """
     for crime_desc in crime_desc_list:
         plot_data = crime_rates_dst[crime_rates_dst['Crime Code Description'] == crime_desc].melt().iloc[1:]
         fig = plot_data.plot.bar(x='variable',
