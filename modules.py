@@ -1,7 +1,9 @@
+import pandas
 import pandas as pd
 from numba import jit
 from datetime import datetime
 import numpy as np
+
 pd.options.plotting.backend = "plotly"
 
 
@@ -175,7 +177,7 @@ def dst_clean(file_path: str, days_to_check: list) -> pd.DataFrame:
 
     was_time_ahead_vec = np.vectorize(was_time_ahead)
     was_dst_df = pd.DataFrame({'Date': days_to_check,
-                             'WasDST': was_time_ahead_vec(days_to_check)})
+                               'WasDST': was_time_ahead_vec(days_to_check)})
     return was_dst_df
 
 
@@ -212,9 +214,9 @@ def plot_daylight_crime_rate(crime_desc_list, crime_rates_dst):
     for crime_desc in crime_desc_list:
         plot_data = crime_rates_dst[crime_rates_dst['Crime Code Description'] == crime_desc].melt().iloc[1:]
         fig = plot_data.plot.bar(x='variable',
-                            y='value',
-                           title=crime_desc,
-                           labels={'variable':'Time','value':'Daily Crime Rate'})
+                                 y='value',
+                                 title=crime_desc,
+                                 labels={'variable': 'Time', 'value': 'Daily Crime Rate'})
         fig.show()
 
 
@@ -236,14 +238,22 @@ def race_vs_arrest(arrest_data: pd.DataFrame, race_data: pd.DataFrame, arrest_ch
     ['Zip Code', 'Homicide Arrests per 100k', 'Black or African American Alone Percent']
 
     """
-    single_arrest_data = pd.DataFrame(arrest_data[arrest_data['Charge Group Description'] == arrest_charge].groupby(['ZipCode', 'Year']).size(), columns=[f'{arrest_charge} Arrests']).reset_index()
     single_arrest_data = pd.DataFrame(
-        single_arrest_data.groupby('ZipCode')[f'{arrest_charge} Arrests'].sum() / single_arrest_data.groupby('ZipCode')['Year'].count(),
+        arrest_data[arrest_data['Charge Group Description'] == arrest_charge].groupby(['ZipCode', 'Year']).size(),
+        columns=[f'{arrest_charge} Arrests']).reset_index()
+    single_arrest_data = pd.DataFrame(
+        single_arrest_data.groupby('ZipCode')[f'{arrest_charge} Arrests'].sum() / single_arrest_data.groupby('ZipCode')[
+            'Year'].count(),
         columns=[f'{arrest_charge} Arrests per Year'])
-    race_single_arrest_data = race_data.merge(single_arrest_data, how='left', left_on='Zip Code', right_on='ZipCode').dropna(
+    race_single_arrest_data = race_data.merge(single_arrest_data, how='left', left_on='Zip Code',
+                                              right_on='ZipCode').dropna(
         subset=[f'{arrest_charge} Arrests per Year'])
-    race_single_arrest_data [f'{race} Percent'] = (race_single_arrest_data [race] / race_single_arrest_data ['Total Population']) * 100
-    race_single_arrest_data[f'{arrest_charge} Arrests per 100k'] = (race_single_arrest_data [f'{arrest_charge} Arrests per Year'] / race_single_arrest_data ['Total Population']) * 100000
+    race_single_arrest_data[f'{race} Percent'] = (race_single_arrest_data[race] / race_single_arrest_data[
+        'Total Population']) * 100
+    race_single_arrest_data[f'{arrest_charge} Arrests per 100k'] = (race_single_arrest_data[
+                                                                        f'{arrest_charge} Arrests per Year'] /
+                                                                    race_single_arrest_data[
+                                                                        'Total Population']) * 100000
     return race_single_arrest_data[['Zip Code', f'{arrest_charge} Arrests per 100k', f'{race} Percent']]
 
 
@@ -269,8 +279,65 @@ def income_vs_crime(crime_data: pd.DataFrame, income_data: pd.DataFrame, race_da
     crime_zip_all = pd.DataFrame(
         crime_zip.groupby('ZipCode')['Crime'].sum() / crime_zip.groupby('ZipCode')['Year'].count(),
         columns=['Total Crime per Year']).reset_index()
-    crime_zip_all = crime_zip_all.merge(race_data, left_on='ZipCode', right_on='Zip Code')[['ZipCode', 'Total Crime per Year', 'Total Population']]
-    crime_zip_all['Crime Rate per 1k'] = (crime_zip_all['Total Crime per Year'] / crime_zip_all['Total Population']) * 1000
-    crime_income = crime_zip_all.merge(income_data, left_on='ZipCode', right_on='Zip').drop(['ZipCode', 'Total Crime per Year', 'Total Population'], axis=1)
+    crime_zip_all = crime_zip_all.merge(race_data, left_on='ZipCode', right_on='Zip Code')[
+        ['ZipCode', 'Total Crime per Year', 'Total Population']]
+    crime_zip_all['Crime Rate per 1k'] = (crime_zip_all['Total Crime per Year'] / crime_zip_all[
+        'Total Population']) * 1000
+    crime_income = crime_zip_all.merge(income_data, left_on='ZipCode', right_on='Zip').drop(
+        ['ZipCode', 'Total Crime per Year', 'Total Population'], axis=1)
     return crime_income
 
+
+def crime_dst(crime_data_dst: pandas.DataFrame) -> pd.DataFrame:
+    """
+    This function finds the crime rate for every crime during DST and during standard time
+    :param crime_data_dst:  Merged dataframe containing WasDST column
+    :return: Dataframe containing crime rate during DST and Standard time for every crime type
+
+    >>> test_crime_data = crime_clean('data/crime_numba_zipcode.csv')
+    >>> test_was_dst_df = dst_clean('data/dst.csv', test_crime_data['Crime Date'].unique())
+    >>> test_crime_data_dst = test_crime_data.merge(test_was_dst_df, left_on='Crime Date', right_on='Date', how='left')
+    >>> test_crime_dst = crime_dst(test_crime_data_dst)
+    >>> test_crime_dst.shape
+    (34, 3)
+    >>> test_crime_dst.columns.to_list()
+    ['Crime Code Description', 'Standard Time', 'Daylight Time']
+    >>> test_crime_dst[(test_crime_dst['Standard Time'] < 2) & (test_crime_dst['Daylight Time'] < 2)].shape
+    (0, 3)
+    """
+    crime_rates_dst = pd.DataFrame(
+        crime_data_dst.groupby(['Crime Code Description', 'WasDST']).size() / crime_data_dst.groupby('WasDST')[
+            'Crime Date'].nunique(), columns=['Crime rate per day']).reset_index()
+    crime_rates_dst = crime_rates_dst.pivot(columns='WasDST', values='Crime rate per day',
+                                            index='Crime Code Description').reset_index()
+    crime_rates_dst.columns = ['Crime Code Description', 'Standard Time', 'Daylight Time']
+    crime_rates_dst = crime_rates_dst[(crime_rates_dst['Standard Time'] > 2) | (crime_rates_dst['Daylight Time'] > 2)]
+    return crime_rates_dst
+
+
+def crime_vs_moon(crime_data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Function to create dataframe for crime rate of every crime on a full moon vs other
+    :param crime_data: Dataframe of crime along with 'Full_Moon' column
+    :return: Dataframe containing crime rate for every crime on a full moon night vs other nights
+
+    >>> test_crime_data = crime_clean('data/crime_numba_zipcode.csv')
+    >>> test_moon_dates = full_moon_finder('data/full_moon.csv')
+    >>> test_crime_data['Full_Moon'] = test_crime_data['Crime Date'].apply(lambda x: x in test_moon_dates)
+    >>> test_data = crime_vs_moon(test_crime_data)
+    >>> test_data.shape
+    (34, 3)
+    >>> test_data.columns.to_list()
+    ['Crime Code Description', 'Non_Full_Moon', 'Full_Moon']
+    >>> test_data[(test_data['Non_Full_Moon'] < 2) & (test_data['Full_Moon'] < 2)].shape
+    (0, 3)
+
+    """
+    crime_rates_moon = pd.DataFrame(
+        crime_data.groupby(['Full_Moon', 'Crime Code Description', ]).size() / crime_data.groupby('Full_Moon')[
+            'Crime Date'].nunique(), columns=['Crime rate per day']).reset_index()
+    crime_rates_moon = crime_rates_moon.pivot(columns='Full_Moon', values='Crime rate per day',
+                                              index='Crime Code Description').reset_index()
+    crime_rates_moon.columns = ['Crime Code Description', 'Non_Full_Moon', 'Full_Moon']
+    crime_rates_moon = crime_rates_moon[(crime_rates_moon['Non_Full_Moon'] > 2) | (crime_rates_moon['Full_Moon'] > 2)]
+    return crime_rates_moon
