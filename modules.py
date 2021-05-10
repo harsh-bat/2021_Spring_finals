@@ -216,3 +216,61 @@ def plot_daylight_crime_rate(crime_desc_list, crime_rates_dst):
                            title=crime_desc,
                            labels={'variable':'Time','value':'Daily Crime Rate'})
         fig.show()
+
+
+def race_vs_arrest(arrest_data: pd.DataFrame, race_data: pd.DataFrame, arrest_charge: str, race: str) -> pd.DataFrame:
+    """
+    This function will create a dataframe for arrest vs percentage of a population of one race for every zip code
+    :param arrest_data: Data about arrests
+    :param race_data:  Data about racial composition in each zip code
+    :param arrest_charge: The arrest for which race vs arrest has to be calculated
+    :param race: The race for which race vs arrest has to be calculated
+    :return: Dataframe containing race vs arrest
+
+    >>> test_arrest_data = arrest_clean('data/arrest_numba_zipcode.csv')
+    >>> test_race_data = race_clean('data/LARace.csv')
+    >>> test_data = race_vs_arrest(test_arrest_data, test_race_data, 'Homicide', 'Black or African American Alone')
+    >>> test_data.shape
+    (68, 3)
+    >>> test_data.columns.to_list()
+    ['Zip Code', 'Homicide Arrests per 100k', 'Black or African American Alone Percent']
+
+    """
+    single_arrest_data = pd.DataFrame(arrest_data[arrest_data['Charge Group Description'] == arrest_charge].groupby(['ZipCode', 'Year']).size(), columns=[f'{arrest_charge} Arrests']).reset_index()
+    single_arrest_data = pd.DataFrame(
+        single_arrest_data.groupby('ZipCode')[f'{arrest_charge} Arrests'].sum() / single_arrest_data.groupby('ZipCode')['Year'].count(),
+        columns=[f'{arrest_charge} Arrests per Year'])
+    race_single_arrest_data = race_data.merge(single_arrest_data, how='left', left_on='Zip Code', right_on='ZipCode').dropna(
+        subset=[f'{arrest_charge} Arrests per Year'])
+    race_single_arrest_data [f'{race} Percent'] = (race_single_arrest_data [race] / race_single_arrest_data ['Total Population']) * 100
+    race_single_arrest_data[f'{arrest_charge} Arrests per 100k'] = (race_single_arrest_data [f'{arrest_charge} Arrests per Year'] / race_single_arrest_data ['Total Population']) * 100000
+    return race_single_arrest_data[['Zip Code', f'{arrest_charge} Arrests per 100k', f'{race} Percent']]
+
+
+def income_vs_crime(crime_data: pd.DataFrame, income_data: pd.DataFrame, race_data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Function to create dataframe for income vs crime rate (per 1k) per year for every zip code
+    :param crime_data: Data about crimes
+    :param income_data: Data about median household income for every zip code
+    :param race_data: Data about racial composition of each zip code
+    :return: Dataframe containing income vs crime rate (per 1k) per year
+
+    >>> test_crime_data = crime_clean('data/crime_numba_zipcode.csv')
+    >>> test_income_data = income_clean('data/LAIncome.csv')
+    >>> test_race_data = race_clean('data/LARace.csv')
+    >>> test_data = income_vs_crime(test_crime_data, test_income_data, test_race_data)
+    >>> test_data.shape
+    (72, 3)
+    >>> test_data.columns.to_list()
+    ['Crime Rate per 1k', 'Zip', 'Amount']
+
+    """
+    crime_zip = pd.DataFrame(crime_data.groupby(['ZipCode', 'Year']).size(), columns=['Crime']).reset_index()
+    crime_zip_all = pd.DataFrame(
+        crime_zip.groupby('ZipCode')['Crime'].sum() / crime_zip.groupby('ZipCode')['Year'].count(),
+        columns=['Total Crime per Year']).reset_index()
+    crime_zip_all = crime_zip_all.merge(race_data, left_on='ZipCode', right_on='Zip Code')[['ZipCode', 'Total Crime per Year', 'Total Population']]
+    crime_zip_all['Crime Rate per 1k'] = (crime_zip_all['Total Crime per Year'] / crime_zip_all['Total Population']) * 1000
+    crime_income = crime_zip_all.merge(income_data, left_on='ZipCode', right_on='Zip').drop(['ZipCode', 'Total Crime per Year', 'Total Population'], axis=1)
+    return crime_income
+
